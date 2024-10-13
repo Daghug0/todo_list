@@ -7,7 +7,7 @@ from lib import display,date_translation
 import datetime
 import string
 
-# TYPES AND CLASS DEFINITION AND/OR MODIFICATION
+# TYPES AND CLASSES DEFINITION
 class UserCommand:
     def __init__(self, owner = None , due_date = None):
         self.due_date = due_date
@@ -16,6 +16,7 @@ class Person:
     def __init__(self, first_name, family_name):
         self.first_name = first_name
         self.family_name = family_name
+        self.role = "manager"
     def get_string(self):
         return self.first_name + " " + self.family_name
     
@@ -69,9 +70,21 @@ def find_tasks(cmd):
     for attribute in cmd.__dict__:
         if getattr(cmd, attribute) != None:
             my_query[attribute] = getattr(cmd, attribute)
-    print(my_query)
     tasks_set = tasks_collection.find(my_query)
     return tasks_set
+
+def authentication():
+    print("Welcome in the TodoList App, please sign in : ")
+    #ask for user ID
+    current_user = get_id_from_user()
+    #ask for password
+    password = get_password_from_user()
+    #verify if user and password are in database
+    if user_name in USER_BASE:
+        print("Welcome back " + user_name)
+    #TODO :return a Person object of the authenticated user
+
+
 
 if __name__=="__main__":
     # Set the databasse to interact with
@@ -79,11 +92,12 @@ if __name__=="__main__":
     db = client.todolist
     # set the collection we want to read in
     tasks_collection = db.tasks
+    #TODO : authentication
+    #TODO : REDIRECT in function of user rights
+
     # get the command from user input
     cmd = get_command_from_user()
     # get all the tasks from the collection
     tasks_set = find_tasks(cmd)
     # print the tasks
     display.print_tasks(tasks_set)
-
-

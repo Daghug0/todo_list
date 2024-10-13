@@ -44,3 +44,19 @@ TO BE DONE > TO BE REVIEWED > DONE
 WORKER can change from STATE 1 to 2
 MANAGER can change it from STATE 2 to 3
 ADMIN can change the state as he wants
+
+BASIC USER:
+    Show the tasks they have to do
+    ask for updates
+MANAGER:
+    1. Ask for operation : Read/write/modify/delete.
+    2.In case of read :   
+            a.Read criterias : owner and or due 
+    3.In case of write :
+            a. ask for title (mandatory), due date and owner (optionnal)
+    4.In case of modify:
+            a. ask for the task to be modified (ID)
+            b. ask for the parameter to be modified
+            c. ask for the modified parameter
+    5.In case of delete:
+            a. ask for the ID of the task to be deleted 
