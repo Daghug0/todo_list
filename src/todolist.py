@@ -3,49 +3,9 @@
 #This file run our application and contains the interface for the user to enter his command
 
 from pymongo import MongoClient
-from lib import display,date_translation
+from lib import display,date_translation,user_interface
 import datetime
 import string
-
-# TYPES AND CLASS DEFINITION AND/OR MODIFICATION
-class UserCommand:
-    def __init__(self, owner = None , due_date = None):
-        self.due_date = due_date
-
-class Person:
-    def __init__(self, first_name, family_name):
-        self.first_name = first_name
-        self.family_name = family_name
-    def get_string(self):
-        return self.first_name + " " + self.family_name
-    
-#print date in DD/MM/YYYY format :
-def get_string(self):
-    self.strftime('%d/%m/%Y')
-
-#This function allow user to prompt his query
-# Input     : None
-# Output    : Command object initialized from prompted items
-def get_command_from_user():
-    #owner = get_owner_from_user()
-    owner = None
-    due_date = get_date_from_user()
-    cmd = UserCommand(owner, due_date)
-    return cmd
-
-def get_owner_from_user():
-    string_owner = input('Type owner (only alpha characters)\n')
-    if string_owner == "":
-        return None
-    string_splitted = string_owner.split(None, 1)
-    isNameValid = (len(string_splitted) == 2)
-    while not isNameValid:
-        string_owner = input('Incorrect Name format, Type owner (with a space between firstname and family name)\n')
-        if string_owner == "":
-            return None
-        string_splitted = string_owner.split(None, 1)
-        isNameValid = (len(string_splitted) == 2)
-    return Person(string_splitted[0],string_splitted[1])
 
 def get_date_from_user():
     string_due_date = input('Type due date (format DD/MM/YYYY)\n')
@@ -79,8 +39,10 @@ if __name__=="__main__":
     db = client.todolist
     # set the collection we want to read in
     tasks_collection = db.tasks
+    # Ask the user for the operation {READ; WRITE; MODIFY; DELETE}
+    current_operation = user_interface.get_command()
     # get the command from user input
-    cmd = get_command_from_user()
+    cmd = user_interface.get_command()
     # get all the tasks from the collection
     tasks_set = find_tasks(cmd)
     # print the tasks

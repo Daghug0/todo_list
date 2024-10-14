@@ -17,3 +17,7 @@ def parse_date_from_string(string_date):
     except ValueError:
         return False, None
     return True, date
+
+#print date in DD/MM/YYYY format :
+def to_string(self):
+    self.strftime('%d/%m/%Y')
