@@ -6,6 +6,7 @@ from pymongo import MongoClient
 from lib import display,date_translation
 import datetime
 import string
+import getpass
 
 # TYPES AND CLASSES DEFINITION
 class UserCommand:
@@ -76,14 +77,24 @@ def find_tasks(cmd):
 def authentication():
     print("Welcome in the TodoList App, please sign in : ")
     #ask for user ID
-    current_user = get_id_from_user()
+    current_user_id = get_id_from_user()
     #ask for password
     password = get_password_from_user()
     #verify if user and password are in database
+    authentication_query = {}
+    authentication_query["user_id"] = current_user_id
+    authentication_query["password"] = password
+    #
     if user_name in USER_BASE:
         print("Welcome back " + user_name)
+    else:
     #TODO :return a Person object of the authenticated user
 
+def get_id_from_user():
+    return input("Enter you ID : ")
+
+def get_password_from_user():
+    return getpass.getpass()
 
 
 if __name__=="__main__":
@@ -92,7 +103,8 @@ if __name__=="__main__":
     db = client.todolist
     # set the collection we want to read in
     tasks_collection = db.tasks
-    #TODO : authentication
+    user_collection = db.users
+    #TODO : authentication 
     #TODO : REDIRECT in function of user rights
 
     # get the command from user input
