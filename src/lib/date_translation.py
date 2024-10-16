@@ -3,11 +3,11 @@
 from dateutil import parser
 import datetime
 
-def parse_date_from_string(string_date):
+def parse_date(string_date : str) -> datetime.datetime:
     splitted_string = string_date.split("/")
     #if there is more than 3 field detected, raise an error
     if len(splitted_string) != 3:
-        return False, None
+        return None
     day = splitted_string[0]
     month = splitted_string[1]
     year = splitted_string[2]
@@ -15,8 +15,8 @@ def parse_date_from_string(string_date):
     try :
         date = datetime.datetime(int(year), int(month), int(day))
     except ValueError:
-        return False, None
-    return True, date
+        return None
+    return date
 
 #print date in DD/MM/YYYY format :
 def to_string(self):

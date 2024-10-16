@@ -1,57 +1,56 @@
 #!bin/python3
 
 from lib import common_types, date_translation
-#This function allow user to prompt his query
-# Input     : None
-# Output    : Command object initialized from prompted items
+import datetime
 
-class Input_argument():
-    def __init__(self, input_message : str, retry_message : str = "Wrong format. "):
+class InputArgument():
+    def __init__(self, input_message : str, is_option : bool = True, retry_message : str = "Wrong format. "):
         self.input_message = input_message
-        self.retry_message = input_message + retry_message
+        self.retry_message = retry_message + input_message
+        self.is_option = is_option
+        self.object_argument = None
 
-    def convert_to_object(self):
-        return True, self.string_argument
+    def convert_to_object(self) -> str:
+        return self.string_argument
+    
+    def is_empty(self) -> bool:
+        return self.string_argument == ""
     
     def get_from_user(self):
         self.string_argument = input(self.input_message)
-        if self.is_empty():
+        if self.is_empty() and self.isOption:
             return None
         self.object_argument = self.convert_to_object()
         while self.object_argument == None:
             self.string_argument = input(self.retry_message)
-            if self.is_empty():
+            if self.is_empty() and self.isOption:
                 return None
             else :
                 self.object_argument = self.convert_to_object()
         return self.object_argument
 
+class PersonArgument(InputArgument):
+    def __init__(self, is_option):
+        InputArgument.__init__(self,"Please enter an owner for your query (Firstname FamilyName) \n", is_option)
 
+    def convert_to_object(self) -> common_types.Person:
+        string_splitted = self.string_argument.split(" ", 1)
+        if (len(string_splitted) == 2):
+            return common_types.Person(string_splitted[0].lower(),string_splitted[1].lower())
+        else :
+            return None
 
+class DateArgument(InputArgument):
+    def __init__(self, is_option):
+        InputArgument.__init__(self,"Please enter a date for your query (DD/MM/YYYY) \n", is_option)
 
-
-
-        
-
-
-    def is_empty(self):
-        return self.string_argument == ""
-
-class Person_argument(Input_argument):
-
-class Date_argument(Input_argument):
-    def __init__(self):
-        Input_argument.__init__("Please enter the title of the task", "")
+    def convert_to_object(self) -> datetime.datetime:
+        return date_translation.parse_date(self.string_argument)
     
 
-class Title_argument(Input_argument):
-    def __init__(self):
-        Input_argument.__init__("Please enter the title of the task", "")
-    
-    def 
-
-
-class ID_argument(Input_argument):
+class TitleArgument(InputArgument):
+    def __init__(self, is_option):
+        InputArgument.__init__(self,"Please enter the title of the task \n", is_option)
 
     
         
@@ -60,50 +59,16 @@ class ID_argument(Input_argument):
 def get_command():
     match(input("Type your command :(W)rite or (R)ead: ")):
         case "W" | "w":
-            title = get_title()
-            owner = get_owner()
-            due_date = get_date()
-
-            query = common_types.Readquery(owner, due_date)
-            return query
+            arg_list = [TitleArgument(False), DateArgument(True), PersonArgument(True)]
+            object_list = []
+            for arg in arg_list:
+                object_list.append(arg.get_from_user())
+            return object_list
             
         case "R" | "r":
-            owner = get_owner()
-            due_date = get_date()
-            query = common_types.Readquery(owner, due_date)
-            return query
-
-
-    #owner = get_owner_from_user()
-    owner = None
-    due_date = get_date()
-    cmd = common_types.UserCommand(owner, due_date)
-    return cmd
-
-def get_owner():
-    string_owner = input('Type owner (only alpha characters)\n')
-    if string_owner == "":
-        return None
-    string_splitted = string_owner.split(None, 1)
-    isNameValid = (len(string_splitted) == 2)
-    while not isNameValid:
-        string_owner = input('Incorrect Name format, Type owner (with a space between firstname and family name)\n')
-        if string_owner == "":
-            return None
-        string_splitted = string_owner.split(None, 1)
-        isNameValid = (len(string_splitted) == 2)
-    return common_types.Person(string_splitted[0],string_splitted[1])
-
-def get_date():
-    string_due_date = input('Type due date (format DD/MM/YYYY)\n')
-    if (string_due_date) == "":
-        return None
-    else:
-        isDateValid,due_date = date_translation.parse_date_from_string(string_due_date)
-    while (not isDateValid):
-        string_due_date = input('Incorrect date format, Type due date (format DD/MM/YYYY)\n')
-        if (string_due_date) == "":
-            return None
-        else :
-            isDateValid,due_date = date_translation.parse_date_from_string(string_due_date)
-    return due_date
+            arg_list = [DateArgument(True), PersonArgument(True)]
+            object_list = []
+            for arg in arg_list():
+                object_list.append(arg.get_from_user())
+            #query = common_types.Readquery(*object_list)
+            return object_list
