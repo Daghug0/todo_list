@@ -1,37 +1,29 @@
 #!bin/python3
 
-#This file run our application and contains the interface for the user to enter his command
+#This file run our application to manage a todolist
 
-from pymongo import MongoClient
-from lib import display,date_translation,user_interface,common_types
-import datetime
-import string
-
-#This function find tasks in mongoDB based on user command
-# Input     : UserCommand object
-# Output    : Cursor of mongoDB documents containing requested tasks
-def find_tasks(cmd):
-    my_query = {}
-    for attribute in cmd.__dict__:
-        if getattr(cmd, attribute) != None:
-            my_query[attribute] = getattr(cmd, attribute)
-    print(my_query)
-    tasks_set = tasks_collection.find(my_query)
-    return tasks_set
+from lib import user_interface,database_manager,display
 
 if __name__=="__main__":
-    # Set the databasse to interact with
-    client = MongoClient("localhost", 27017)
-    db = client.todolist
-    # set the collection we want to read in
-    tasks_collection = db.tasks
+    # init the database client
+    db_manager = database_manager.DataBaseManager()
     # get the inputs arguments from user
-    current_objectlist = user_interface.get_command()
-    # get all the tasks from the collection
-    query = common_types.Writequery(*current_objectlist)
-    id = query.send_query()
-    print(id)
-    # print the tasks
-    # display.print_tasks(tasks_set)
+    crud_operation, current_objects = user_interface.get_command()
+    # treatment depending on the operation to perform
+    match(crud_operation):
+        case "write":
+            # in case of write, insert a task on DB and read it from the returned ID
+            result_write = db_manager.write(current_objects)
+            if result_write.acknowledged:
+                print("write success")
+                result_read = db_manager.read({"_id" : result_write.inserted_id})
+            else :
+                print("write failure : Something went wrong")
+        case "read":
+            # in case of read, read the tasks based on the given criterias
+            result_read = db_manager.read(current_objects)
+    #print the tasks retrieved except if it was a delete operation
+    if (crud_operation != "delete"):
+        display.print_task_table(result_read)
 
 
