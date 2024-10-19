@@ -1,7 +1,6 @@
 # This file provides global variables and types, as well as tools used by other modules.
 
 import datetime
-from pymongo.son_manipulator import SONManipulator
 
 USER_ID = "user"
 DATE_ID = "due_date"

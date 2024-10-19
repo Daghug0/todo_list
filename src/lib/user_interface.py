@@ -52,7 +52,7 @@ class DateArgument(InputArgument):
         self.id = common_types.DATE_ID
 
     def convert_to_object(self) -> datetime.datetime:
-        return common_types.parse_date(self.string_argument)
+        return {"$lt" : common_types.parse_date(self.string_argument)}
     
 
 class TitleArgument(InputArgument):
@@ -70,6 +70,10 @@ def get_command() -> tuple[str, list]:
         case "R" | "r":
             crud_operation = "read"
             arg_list = [DateArgument(True), PersonArgument(True)]
+        case "M" | "m":
+            arg_list = [TitleArgument(False), DateArgument(True), PersonArgument(True)]
+        case "D" | "d":
+            arg_list = [TitleArgument(False)]
         case _:
             print("This instruction is not known, exiting...")
             exit()
