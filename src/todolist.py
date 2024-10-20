@@ -4,6 +4,21 @@
 
 from lib import user_interface,database_manager,display
 
+def find_exact_task(query_filter : dict) -> dict | None:
+    # Use the title arguments of the query object to be the filter
+    result_read = db_manager.read({"title" : query_filter["title"]})
+    query_objects.pop("title")
+    if len(list(result_read.clone())) == 0:
+        return None
+    # if several, ask for the user to chose 1
+    elif len(list(result_read.clone())) > 1:
+        display.print_task_table(result_read)
+        choosen_task_index = user_interface.chose_task(len(result_read))
+        return result_read[choosen_task_index]
+    else :
+        return result_read[0]
+
+
 if __name__=="__main__":
     # init the database client
     db_manager = database_manager.DataBaseManager()
@@ -22,37 +37,39 @@ if __name__=="__main__":
                 else :
                     print("write failure : Something went wrong")
         case "read":
+            # modify date object so that it reads "before a due date"
+            if "due_date" in query_objects.keys():
+                query_objects["due_date"] = {"$lt" : query_objects["due_date"]}
             # in case of read, read the tasks based on the given criterias
             result_read = db_manager.read(query_objects)
         case "modify":
             # In case of modify:
             # Use the title arguments of the query object to be the filter
-            result_read = db_manager.read({"title" : query_objects["title"]})
-            query_objects.pop("title")
-            if len(result_read) == 0:
-                print("modification failure : Your task hasn't been found, try again later...")
+            task_to_modify = find_exact_task({"title" : query_objects["title"]})
+            if task_to_modify == None:
+                print("No task has been found corresponding to your query, exiting...")
                 exit()
-            # if several, ask for the user to chose 1
-            elif len(result_read ) > 1:
-                display.print_task_table(result_read)
-                choosen_task_index = user_interface.chose_task(len(result_read))
-                element_to_modify = result_read[choosen_task_index]
-            else :
-                element_to_modify = result_read[0]
-            # modify the task choosen by the input arguments
-            result_modify = db_manager.modify(element_to_modify, query_objects)
+            # Modify the task choosen by the input arguments
+            updates = {"$set" : query_objects}
+            result_modify = db_manager.modify(task_to_modify, updates)
             if result_modify.acknowledged:
                 print("modification success")
-                result_read = db_manager.read({"_id" : result_modify.inserted_id})
+                result_read = db_manager.read({"_id" : task_to_modify["_id"]})
             else :
                 print("modification failure : Something went wrong")
         case "delete":
-            #in case of delete, try to read the task with the corresponding filter,
-            #then, prompt user if he wants to delete it, or try another.
-            if db_manager.delete().acknowledged:
-                print("delete success")
+            # In case of delete:
+            # Use the title arguments of the query object to be the filter
+            task_to_delete = find_exact_task({"title" : query_objects["title"]})
+            if task_to_delete == None:
+                print("No task has been found corresponding to your query, exiting...")
+                exit()
+            # Modify the task choosen by the input arguments
+            result_delete = db_manager.delete(task_to_delete)
+            if result_delete.acknowledged:
+                print("deletion success")
             else :
-                print ("delete failure, Something went wrong")
+                print("deletion failure : Something went wrong")
     #print the tasks retrieved except if it was a delete operation
     if (crud_operation != "delete"):
         display.print_task_table(result_read)

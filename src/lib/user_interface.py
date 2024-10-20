@@ -52,7 +52,7 @@ class DateArgument(InputArgument):
         self.id = common_types.DATE_ID
 
     def convert_to_object(self) -> datetime.datetime:
-        return {"$lt" : common_types.parse_date(self.string_argument)}
+        return common_types.parse_date(self.string_argument)
     
 
 class TitleArgument(InputArgument):
@@ -61,9 +61,9 @@ class TitleArgument(InputArgument):
         self.id = common_types.TITLE_ID
         
 
-def get_command() -> tuple[str, list]:
+def get_command() -> tuple[str, dict]:
     objects = {}
-    match(input("Type your command :(W)rite or (R)ead: ")):
+    match(input("Type your command (W)rite, (R)ead, (M)odify, (D)elete : ")):
         case "W" | "w":
             crud_operation = "write"
             arg_list = [TitleArgument(False), DateArgument(True), PersonArgument(True)]
@@ -71,8 +71,10 @@ def get_command() -> tuple[str, list]:
             crud_operation = "read"
             arg_list = [DateArgument(True), PersonArgument(True)]
         case "M" | "m":
+            crud_operation = "modify"
             arg_list = [TitleArgument(False), DateArgument(True), PersonArgument(True)]
         case "D" | "d":
+            crud_operation = "delete"
             arg_list = [TitleArgument(False)]
         case _:
             print("This instruction is not known, exiting...")

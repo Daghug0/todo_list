@@ -1,5 +1,6 @@
 #This file contains the interface with the database
 import pymongo
+import pymongo.results
 from lib import common_types
 import datetime
 
@@ -16,7 +17,7 @@ class DataBaseManager:
     def write(self, query : dict) -> pymongo.cursor.CursorType:
         return self.tasks_collection.insert_one(query)
 
-    def modify(self, filter, updates : dict) -> pymongo.cursor.CursorType:
+    def modify(self, filter, updates : dict) -> pymongo.results.UpdateResult:
         return self.tasks_collection.update_one(filter, updates)
     
     def delete(self, filter : dict) -> pymongo.cursor.CursorType:
