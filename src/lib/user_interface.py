@@ -82,3 +82,20 @@ def get_command() -> tuple[str, list]:
         if object != None:
             objects[arg.id] = object
     return crud_operation, objects
+
+def chose_task(list_length):
+    print("Several tasks have been found corresponding to the title.")
+    str_choice = input("Please choose one among the list by typing the number associated to a task \n")
+    try :
+        int_choice = int(str_choice)
+    except ValueError:
+        int_choice = -1
+    while int_choice == -1:
+        str_choice = input("choice not in the list, please try again\n")
+        try :
+            int_choice = int(str_choice)
+        except ValueError:
+            int_choice = -1
+    return int_choice
+    
+    

@@ -25,5 +25,8 @@ class DataBaseManager:
     def is_present(self, filter) -> bool:
         return (len(self.tasks_collection.find_one(filter))!=0)
 
+    def find_one(self,filter) -> pymongo.cursor.CursorType:
+        return self.tasks_collection.find_one(filter)
+
 
             
