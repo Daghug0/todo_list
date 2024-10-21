@@ -13,7 +13,7 @@ def find_exact_task(query_filter : dict) -> dict | None:
     # if several, ask for the user to chose 1
     elif len(list(result_read.clone())) > 1:
         display.print_task_table(result_read)
-        choosen_task_index = user_interface.chose_task(len(result_read))
+        choosen_task_index = user_interface.chose_task(len(list(result_read.clone())))
         return result_read[choosen_task_index]
     else :
         return result_read[0]
@@ -29,7 +29,7 @@ if __name__=="__main__":
         case "write":
             # In case of write, insert a task on DB and read it from the returned ID
             # before reading a task, verify if there is no existing task with the same title
-            if db_manager.is_present():
+            if db_manager.is_present({"title" : query_objects["title"]}):
                 result_write = db_manager.write(query_objects)
                 if result_write.acknowledged:
                     print("write success")
@@ -49,7 +49,7 @@ if __name__=="__main__":
             if task_to_modify == None:
                 print("No task has been found corresponding to your query, exiting...")
                 exit()
-            # Modify the task choosen by the input arguments
+            # Modify the task choosen with updates arguments
             updates = {"$set" : query_objects}
             result_modify = db_manager.modify(task_to_modify, updates)
             if result_modify.acknowledged:

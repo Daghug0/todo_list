@@ -4,7 +4,8 @@ import datetime
 
 USER_ID = "user"
 DATE_ID = "due_date"
-TITLE_ID = "title"  
+TITLE_ID = "title"
+IDX_ID = "idx"
 
 def parse_date(string_date : str) -> datetime.datetime:
     splitted_string = string_date.split("/")
