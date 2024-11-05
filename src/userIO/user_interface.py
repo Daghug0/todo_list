@@ -2,7 +2,7 @@
 
 #This file provides services to ask to the user the operation he wants to perform and the corresponding arguments.
 
-from lib import common_types
+from utils import utils
 import datetime
 
 class InputArgument():
@@ -37,7 +37,7 @@ class InputArgument():
 class PersonArgument(InputArgument):
     def __init__(self, is_option):
         InputArgument.__init__(self,"Please enter an owner for your query (Firstname FamilyName) \n", is_option)
-        self.id = common_types.USER_ID
+        self.id = utils.USER_ID
 
     def convert_to_object(self) -> dict:
         string_splitted = self.string_argument.split(" ", 1)
@@ -49,27 +49,33 @@ class PersonArgument(InputArgument):
 class DateArgument(InputArgument):
     def __init__(self, is_option):
         InputArgument.__init__(self,"Please enter a date for your query (DD/MM/YYYY) \n", is_option)
-        self.id = common_types.DATE_ID
+        self.id = utils.DATE_ID
 
     def convert_to_object(self) -> datetime.datetime:
-        return common_types.parse_date(self.string_argument)
+        return utils.parse_date(self.string_argument)
     
 
 class TitleArgument(InputArgument):
     def __init__(self, is_option):
         InputArgument.__init__(self,"Please enter the title of the task \n", is_option)
-        self.id = common_types.TITLE_ID
+        self.id = utils.TITLE_ID
         
-
-def get_command() -> tuple[str, list]:
+#this function allow to get all the necessary arguments for the app to process it
+def get_command() -> tuple[str, dict]:
     objects = {}
-    match(input("Type your command :(W)rite or (R)ead: ")):
+    match(input("Type your command (W)rite, (R)ead, (M)odify, (D)elete : ")):
         case "W" | "w":
             crud_operation = "write"
             arg_list = [TitleArgument(False), DateArgument(True), PersonArgument(True)]
         case "R" | "r":
             crud_operation = "read"
             arg_list = [DateArgument(True), PersonArgument(True)]
+        case "M" | "m":
+            crud_operation = "modify"
+            arg_list = [TitleArgument(False), DateArgument(True), PersonArgument(True)]
+        case "D" | "d":
+            crud_operation = "delete"
+            arg_list = [TitleArgument(False)]
         case _:
             print("This instruction is not known, exiting...")
             exit()
@@ -78,3 +84,20 @@ def get_command() -> tuple[str, list]:
         if object != None:
             objects[arg.id] = object
     return crud_operation, objects
+
+def chose_task(list_length):
+    print("Several tasks have been found corresponding to the title.")
+    str_choice = input("Please choose one among the list by typing the number associated to a task \n")
+    try :
+        int_choice = int(str_choice)
+    except ValueError:
+        int_choice = -1
+    while int_choice == -1:
+        str_choice = input("choice not in the list, please try again\n")
+        try :
+            int_choice = int(str_choice)
+        except ValueError:
+            int_choice = -1
+    return int_choice
+    
+    
