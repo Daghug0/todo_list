@@ -28,4 +28,9 @@ def date_to_string(date_object : datetime.datetime) -> str:
 
 #return name in first_name last_name format :
 def user_to_string(user_object : dict) -> str:
-    return (user_object["first_name"] + " " + user_object["last_name"])
+    first_name = user_object.get("first_name", "ERROR")
+    last_name = user_object.get("last_name", "ERROR")
+    if isinstance(first_name,str) and isinstance(last_name,str):
+        return (first_name + " " + last_name)
+    else :
+        return ("ERROR")

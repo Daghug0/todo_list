@@ -2,7 +2,7 @@
 
 #This file provides services to ask to the user the operation he wants to perform and the corresponding arguments.
 
-from lib import common_types
+from utils import utils
 import datetime
 
 class InputArgument():
@@ -37,7 +37,7 @@ class InputArgument():
 class PersonArgument(InputArgument):
     def __init__(self, is_option):
         InputArgument.__init__(self,"Please enter an owner for your query (Firstname FamilyName) \n", is_option)
-        self.id = common_types.USER_ID
+        self.id = utils.USER_ID
 
     def convert_to_object(self) -> dict:
         string_splitted = self.string_argument.split(" ", 1)
@@ -49,18 +49,18 @@ class PersonArgument(InputArgument):
 class DateArgument(InputArgument):
     def __init__(self, is_option):
         InputArgument.__init__(self,"Please enter a date for your query (DD/MM/YYYY) \n", is_option)
-        self.id = common_types.DATE_ID
+        self.id = utils.DATE_ID
 
     def convert_to_object(self) -> datetime.datetime:
-        return common_types.parse_date(self.string_argument)
+        return utils.parse_date(self.string_argument)
     
 
 class TitleArgument(InputArgument):
     def __init__(self, is_option):
         InputArgument.__init__(self,"Please enter the title of the task \n", is_option)
-        self.id = common_types.TITLE_ID
+        self.id = utils.TITLE_ID
         
-
+#this function allow to get all the necessary arguments for the app to process it
 def get_command() -> tuple[str, dict]:
     objects = {}
     match(input("Type your command (W)rite, (R)ead, (M)odify, (D)elete : ")):
