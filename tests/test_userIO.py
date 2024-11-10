@@ -1,11 +1,12 @@
-import unittest
-import unittest.mock
-import datetime
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from display_manager import DisplayManager
+import unittest
+import unittest.mock
+import datetime
+
+from src.userIO.display_manager import DisplayManager
 
 class TestDisplayManager(unittest.TestCase):
     def setUp(self):
