@@ -11,11 +11,10 @@ from src.api.database_manager import DataBaseManager
 
 class TestDataBaseManager(unittest.TestCase):
 
-    def test_connection_closed_on_destruction(self):
-        db_manager = DataBaseManager()
-        client = db_manager.client
-        self.assertTrue(client.is_primary)
-        del db_manager
+    def test_connection_closed_on_exit(self):
+        with DataBaseManager() as db_manager:
+            client = db_manager.client
+            self.assertTrue(client.is_primary)
         with self.assertRaises(pymongo.errors.InvalidOperation):
             client.server_info()
     
