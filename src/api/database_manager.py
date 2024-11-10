@@ -1,13 +1,32 @@
 #This file contains the interface with the database
 import pymongo
 import pymongo.results
+import pymongo.collection
+import pymongo.database
+import pymongo.errors
 
 class DataBaseManager:
     def __init__(self):
-        self.client = pymongo.MongoClient("localhost", 27017)
-        self.db = self.client.todolist
-        self.tasks_collection = self.db.tasks
-        self.collaborators_collection = self.db.collaborators
+        self.client = None
+        self.db = None
+        self.tasks_collection = None
+        self.collaborators_collection = None
+        
+        try:
+            self.client = pymongo.MongoClient("localhost", 27017)
+            self.db = self.client['todolist']  # Correct way to access the database
+            self.tasks_collection = self.db['tasks']
+            self.collaborators_collection = self.db['collaborators']
+        except (pymongo.errors.ConnectionFailure,pymongo.errors.InvalidName) as e:
+            self.close()
+            raise SystemExit(e)
+        
+    def __del__(self):
+        self.close()
+    
+    def close(self):
+        if self.client and self.client.is_primary:
+            self.client.close()
     
     def read_tasks(self, filter : dict) -> pymongo.cursor.CursorType:
         return self.tasks_collection.find(filter)
