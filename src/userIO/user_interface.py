@@ -34,15 +34,15 @@ class InputArgument():
                 self.object_argument = self.convert_to_object()
         return self.object_argument
 
-class PersonArgument(InputArgument):
+class CollaboratorArgument(InputArgument):
     def __init__(self, is_option):
         InputArgument.__init__(self,"Please enter an owner for your query (Firstname FamilyName) \n", is_option)
         self.id = utils.USER_ID
 
-    def convert_to_object(self) -> dict:
+    def convert_to_object(self) -> utils.Name | None:
         string_splitted = self.string_argument.split(" ", 1)
         if (len(string_splitted) == 2):
-            return {'first_name': string_splitted[0].lower(), 'last_name': string_splitted[1].lower()}
+            return utils.Name(string_splitted[0].lower(),string_splitted[1].lower())
         else :
             return None
 
@@ -66,13 +66,13 @@ def get_command() -> tuple[str, dict]:
     match(input("Type your command (W)rite, (R)ead, (M)odify, (D)elete : ")):
         case "W" | "w":
             crud_operation = "write"
-            arg_list = [TitleArgument(False), DateArgument(True), PersonArgument(True)]
+            arg_list = [TitleArgument(False), DateArgument(True), CollaboratorArgument(True)]
         case "R" | "r":
             crud_operation = "read"
-            arg_list = [DateArgument(True), PersonArgument(True)]
+            arg_list = [DateArgument(True), CollaboratorArgument(True)]
         case "M" | "m":
             crud_operation = "modify"
-            arg_list = [TitleArgument(False), DateArgument(True), PersonArgument(True)]
+            arg_list = [TitleArgument(False), DateArgument(True), CollaboratorArgument(True)]
         case "D" | "d":
             crud_operation = "delete"
             arg_list = [TitleArgument(False)]
@@ -100,4 +100,26 @@ def chose_task(list_length):
             int_choice = -1
     return int_choice
     
-    
+def request_operation():
+    while True:
+        try:
+            operation = get_valid_operation()
+        except ValueError:
+            continue
+        break   
+    return operation
+def get_valid_operation():
+    match(input("Choose an operation (W)rite, (R)ead, (M)odify, (D)elete : ")):
+        case "W" | "w":
+            crud_operation = "write"
+        case "R" | "r":
+            crud_operation = "read"
+        case "M" | "m":
+            crud_operation = "modify"
+        case "D" | "d":
+            crud_operation = "delete"
+        case _:
+            raise ValueError("This instruction is not known.")
+
+def request_arguments(crud_operation):
+    pass
