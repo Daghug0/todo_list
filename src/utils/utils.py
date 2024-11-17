@@ -1,6 +1,13 @@
 # This file provides global variables and types, as well as tools used by other modules.
 
 import datetime
+from enum import Enum
+
+class OperationType(Enum):
+    READ = 1
+    WRITE = 2
+    DELETE = 3
+    MODIFY = 4
 
 USER_ID = "collaborator_name"
 DATE_ID = "due_date"
@@ -32,18 +39,10 @@ def parse_collaborator(collaborator : str) -> tuple:
             return string_splitted[0].lower(),string_splitted[1].lower()
         else :
             raise ValueError("Invalid collaborator format. Expected format: 'first_name last_name'.")
-
-#return name in first_name last_name format : TODO : Remove after integration of Name class
-def user_to_string(user_object : dict) -> str:
-    first_name = user_object.get("first_name", "ERROR")
-    last_name = user_object.get("last_name", "ERROR")
-    if isinstance(first_name,str) and isinstance(last_name,str):
-        return (first_name + " " + last_name)
-    else :
-        return ("ERROR")
     
 class Collaborator():
     def __init__(self, name):
+        self.key = "collaborator_name"
         if isinstance(dict, name):
             self.init_from_dict(name)
         elif isinstance(str, name):
@@ -64,6 +63,7 @@ class Collaborator():
 
 class Date():
     def __init__(self, date):
+        self.key = "due_date"
         if isinstance(str,date):
             self.date = parse_date(date)
         elif isinstance(datetime.datetime, date):
