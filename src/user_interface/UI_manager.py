@@ -5,7 +5,11 @@ from .operations import ReadOperation, WriteOperation, DeleteOperation, ModifyOp
 from utils import utils
 
 class UIManager():
-    def __init__():
+    def __init__(self):
+        pass
+    def __enter__(self):
+        return self
+    def __exit__(self, exc_type, exc_value, exc_traceback):
         pass
     
     def request_and_get_idx(list_length : int) -> int:
@@ -55,9 +59,9 @@ class UIManager():
     def request_operation(self) -> None:
         match(input("Choose an operation (W)rite, (R)ead, (M)odify, (D)elete : ")):
             case "W" | "w":
-                self.operation = ReadOperation()
-            case "R" | "r":
                 self.operation = WriteOperation()
+            case "R" | "r":
+                self.operation = ReadOperation()
             case "M" | "m":
                 self.operation = ModifyOperation()
             case "D" | "d":

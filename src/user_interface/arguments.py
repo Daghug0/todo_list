@@ -1,6 +1,6 @@
 #!bin/python3
 
-from src.utils.custom_types import Collaborator, Date
+from utils.custom_types import Collaborator, Date
 
 class InputArgument():
     def __init__(self, input_message : str, is_option : bool = True, retry_message : str = "Wrong format. "):
@@ -9,8 +9,8 @@ class InputArgument():
         self.is_option = is_option
         self.data = None
     
-    def is_empty(self) -> bool:
-        return self.string_argument == ""
+    def is_empty(self, input_string) -> bool:
+        return input_string == ""
     
     def request_data_until_valid(self) -> None:
         while True:
@@ -26,7 +26,7 @@ class InputArgument():
     
 class CollaboratorArgument(InputArgument):
     def __init__(self, is_option):
-        super().__init__(self,"Please enter an owner for your query (Firstname FamilyName) \n", is_option)
+        InputArgument.__init__(self,"Please enter an owner for your query (Firstname FamilyName) \n", is_option)
     
     def convert_string(self, input_string : str) -> Collaborator:
         if super().is_empty(input_string) and self.is_option:
@@ -36,10 +36,10 @@ class CollaboratorArgument(InputArgument):
 
 class DateArgument(InputArgument):
     def __init__(self, is_option):
-        super().__init__(self,"Please enter a date for your query (DD/MM/YYYY) \n", is_option)
+        InputArgument.__init__(self,"Please enter a date for your query (DD/MM/YYYY) \n", is_option)
 
     def convert_string(self, input_string) -> Date | None:
-        if super().is_empty() and self.is_option:
+        if super().is_empty(input_string) and self.is_option:
             return None
         else:
             return Date(input_string)
@@ -50,7 +50,7 @@ class TitleArgument(InputArgument):
         InputArgument.__init__(self,"Please enter the title of the task \n", is_option)
     
     def convert_string(self, input_string) -> str | None:
-        if super().is_empty() and self.is_option:
+        if super().is_empty(input_string) and self.is_option:
             return None
         else:
             return input_string

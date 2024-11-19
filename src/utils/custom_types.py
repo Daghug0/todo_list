@@ -12,9 +12,9 @@ class Collaborator(CustomType):
     def __init__(self, name):
         super().__init__()
         self.key = "collaborator_name"
-        if isinstance(dict, name):
+        if isinstance(name, dict):
             self.init_from_dict(name)
-        elif isinstance(str, name):
+        elif isinstance(name, str):
             self.first_name,self.last_name = parse_collaborator(name)
         else:
             raise SystemExit("Either string or dict must be provided.")
@@ -34,9 +34,9 @@ class Date(CustomType):
     def __init__(self, date):
         super().__init__()
         self.key = "due_date"
-        if isinstance(str,date):
+        if isinstance(date,str):
             self.date = parse_date(date)
-        elif isinstance(datetime.datetime, date):
+        elif isinstance(date, datetime.datetime):
             self.init_from_dict(date)
         else:
             raise SystemExit("Either string or datetime or dict_date must be provided.")
@@ -51,7 +51,7 @@ class Title(CustomType):
     def __init__(self, title):
         super().__init__()
         self.key = "title"
-        if isinstance(str, title):
+        if isinstance(title, str):
             self.title = title
         else: 
             raise SystemExit("String must be provided.")
