@@ -31,6 +31,29 @@ class DataBaseManager:
     def close(self):
         if self.client and self.client.is_primary:
             self.client.close()
+
+    def read(self, filter : dict) -> pymongo.cursor.CursorType:
+        if "due_date" in filter.keys():
+            filter["due_date"] = {"$lt" : filter["due_date"]}
+        return self.tasks_collection.find(filter)
+    
+    def write(self, task_with_name : dict) -> pymongo.cursor.CursorType:
+        task_with_id = self.replace_collaborator_name_by_id(task_with_name)
+        result_read = self.tasks_collection.insert_one(task_with_id)
+        if result_read.acknowledged:
+            return self.read({"_id": result_read.inserted_id})
+        else :
+            raise SystemExit("Failed to insert task, aborting...")
+    def find():
+        pass
+
+    def modify(self, id, updates : list):
+        pass
+
+    def delete(self, id):
+        pass
+
+
     
     def read_tasks(self, filter : dict) -> pymongo.cursor.CursorType:
         #First part of the function allow to find the collaborator_id based on his name

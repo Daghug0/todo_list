@@ -1,5 +1,5 @@
 #!bin/python3
-from arguments import DateArgument, CollaboratorArgument, TitleArgument
+from .arguments import DateArgument, CollaboratorArgument, TitleArgument
 
 class Operation():
     def __init__(self):
@@ -11,9 +11,30 @@ class Operation():
     def get_arguments(self):
         return [arg.get_data() for arg in self.arguments]
 
-class ReadOperation():
+class ReadOperation(Operation):
     def __init__(self):
         super().__init__()
         date = DateArgument(True)
         collaborator = CollaboratorArgument(True)
-        self.arguments = [date, collaborator]    
+        self.arguments = [date, collaborator]
+
+class WriteOperation(Operation):
+    def __init__(self):
+        super().__init__()
+        title = TitleArgument(False)
+        date = DateArgument(True)
+        collaborator = CollaboratorArgument(True)
+        self.arguments = [title, date, collaborator]
+
+class DeleteOperation(Operation):
+    def __init__(self):
+        super().__init__()
+        title = TitleArgument(False)
+        self.arguments = [title]
+
+class ModifyOperation(Operation):
+    def __init__(self):
+        super().__init__()
+        title = TitleArgument(False)
+        date = DateArgument(True)
+        collaborator = CollaboratorArgument(True)

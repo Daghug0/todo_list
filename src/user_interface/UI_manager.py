@@ -1,8 +1,7 @@
 #!bin/python3
 
 #This file provides services to ask to the user the operation he wants to perform and the corresponding arguments.
-from arguments import TitleArgument, DateArgument, CollaboratorArgument
-from operations import ReadOperation, WriteOperation, DeleteOperation, modifyOperation
+from .operations import ReadOperation, WriteOperation, DeleteOperation, ModifyOperation
 from utils import utils
 
 class UIManager():
@@ -22,6 +21,11 @@ class UIManager():
                 continue
             break
         return int_choice
+    
+    def request_all(self) -> None:
+        self.request_operation_until_valid()
+        self.operation.request_arguments()
+        
                 
     def request_operation_until_valid(self) -> str:
         while True:
@@ -41,9 +45,13 @@ class UIManager():
         elif isinstance(self.operation, ModifyOperation):
             return utils.OperationType.MODIFY
     
-    def get_arguments(self) -> list:
-        self.operation.get_arguments()
-
+    def get_arguments(self) -> dict:
+        argument_list = self.operation.get_arguments()
+        arguments_dict = {}
+        for argument in argument_list:
+            data  = argument.get_data()
+            arguments_dict[data.get_key()] = data.get_object()
+        return arguments_dict
     def request_operation(self) -> None:
         match(input("Choose an operation (W)rite, (R)ead, (M)odify, (D)elete : ")):
             case "W" | "w":
