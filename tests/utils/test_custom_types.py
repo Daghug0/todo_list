@@ -15,7 +15,7 @@ class TestCollaborator(unittest.TestCase):
         expected_result = {"first_name": "john", "last_name": "doe"}
         collaborator = Collaborator({   "first_name" : "John",
                                         "last_name" : "Doe"})
-        self.assertEqual(collaborator.get_dict(), expected_result) 
+        self.assertEqual(collaborator.get_object(), expected_result) 
     def test_collaborator_init_with_invalid_dict_key(self):
         with self.assertRaises(ValueError):
             collaborator = Collaborator({"invalid_key" : "John Doe"})

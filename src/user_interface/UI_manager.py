@@ -2,7 +2,7 @@
 
 #This file provides services to ask to the user the operation he wants to perform and the corresponding arguments.
 from .operations import ReadOperation, WriteOperation, DeleteOperation, ModifyOperation
-from utils import utils
+from utils import utils, CustomType
 
 class UIManager():
     def __init__(self):
@@ -49,13 +49,13 @@ class UIManager():
         elif isinstance(self.operation, ModifyOperation):
             return utils.OperationType.MODIFY
     
-    def get_arguments(self) -> dict:
-        argument_list = self.operation.get_arguments()
-        arguments_dict = {}
-        for argument in argument_list:
-            data  = argument.get_data()
-            arguments_dict[data.get_key()] = data.get_object()
-        return arguments_dict
+    def get_arguments_data(self) -> dict:
+        data_list = self.operation.get_arguments()
+        data_dict = {}
+        for data in data_list:
+            if isinstance(data, CustomType):
+                data_dict[data.get_corresponding_key()] = data.get_object()
+        return data_dict
     def request_operation(self) -> None:
         match(input("Choose an operation (W)rite, (R)ead, (M)odify, (D)elete : ")):
             case "W" | "w":

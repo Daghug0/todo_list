@@ -7,6 +7,8 @@ class CustomType():
         self.key = None
     def get_corresponding_key(self) -> str:
         return self.key
+    def get_object(self):
+        raise NotImplementedError("Subclasses must implement this method.")
 
 class Collaborator(CustomType):
     def __init__(self, name):
@@ -28,7 +30,7 @@ class Collaborator(CustomType):
         else :
             raise ValueError("Invalid dictionary format. Expected keys: first_name and last_name.")
 
-    def get_dict(self):
+    def get_object(self):
         return {"first_name": self.first_name, "last_name": self.last_name}
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
@@ -59,4 +61,6 @@ class Title(CustomType):
         else: 
             raise SystemExit("String must be provided.")
     def __str__(self):
+        return self.title
+    def get_object(self):
         return self.title

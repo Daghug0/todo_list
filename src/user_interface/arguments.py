@@ -50,7 +50,10 @@ class TitleArgument(InputArgument):
         InputArgument.__init__(self,"Please enter the title of the task \n", is_option)
     
     def convert_string(self, input_string) -> str | None:
-        if super().is_empty(input_string) and self.is_option:
-            return None
+        if super().is_empty(input_string):
+            if self.is_option:
+                return None
+            else:
+                raise ValueError("Title argument is mandatory")
         else:
             return input_string

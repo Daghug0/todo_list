@@ -38,3 +38,4 @@ class ModifyOperation(Operation):
         title = TitleArgument(False)
         date = DateArgument(True)
         collaborator = CollaboratorArgument(True)
+        self.arguments = [title, date, collaborator]

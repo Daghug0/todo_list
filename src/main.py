@@ -16,7 +16,7 @@ if __name__=="__main__":
         # Get the operation that have been requested and the arguments associated
         ui_manager.request_all()
         crud_operation = ui_manager.get_operation()
-        arguments = ui_manager.get_arguments()
+        arguments = ui_manager.get_arguments_data()
     # # treatment depending on the operation to perform
     #     with DataBaseManager() as db_manager:
     #         match(crud_operation):
