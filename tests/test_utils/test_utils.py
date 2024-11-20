@@ -1,10 +1,10 @@
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..', 'src')))
 
 import unittest
 import datetime
-from utils import date_to_string, parse_date, parse_collaborator
+from src.utils import date_to_string, parse_date, parse_collaborator
 
 class TestDateToString(unittest.TestCase):
     def test_date_to_string_standard_date(self):

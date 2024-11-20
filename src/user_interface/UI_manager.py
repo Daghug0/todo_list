@@ -2,7 +2,7 @@
 
 #This file provides services to ask to the user the operation he wants to perform and the corresponding arguments.
 from .operations import ReadOperation, WriteOperation, DeleteOperation, ModifyOperation
-from utils import utils, CustomType
+from utils import CustomType, OperationType
 
 class UIManager():
     def __init__(self):
@@ -41,13 +41,13 @@ class UIManager():
     
     def get_operation(self) -> int:
         if isinstance(self.operation, ReadOperation):
-            return utils.OperationType.READ
+            return OperationType.READ
         elif isinstance(self.operation, WriteOperation):
-            return utils.OperationType.WRITE
+            return OperationType.WRITE
         elif isinstance(self.operation, DeleteOperation):
-            return utils.OperationType.DELETE
+            return OperationType.DELETE
         elif isinstance(self.operation, ModifyOperation):
-            return utils.OperationType.MODIFY
+            return OperationType.MODIFY
     
     def get_arguments_data(self) -> dict:
         data_list = self.operation.get_arguments()

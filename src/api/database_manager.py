@@ -35,17 +35,18 @@ class DataBaseManager:
     def read(self, filter : dict) -> pymongo.cursor.CursorType:
         if "due_date" in filter.keys():
             filter["due_date"] = {"$lt" : filter["due_date"]}
-        return self.tasks_collection.find(filter)
+        return self.find(filter)
     
     def write(self, task_with_name : dict) -> pymongo.cursor.CursorType:
         task_with_id = self.replace_collaborator_name_by_id(task_with_name)
-        result_read = self.tasks_collection.insert_one(task_with_id)
-        if result_read.acknowledged:
-            return self.read({"_id": result_read.inserted_id})
+        result_write = self.tasks_collection.insert_one(task_with_id)
+        if result_write.acknowledged:
+            return self.read({"_id": result_write.inserted_id})
         else :
             raise SystemExit("Failed to insert task, aborting...")
-    def find():
-        pass
+    def find(self, filter):
+        final_filter = self.replace_collaborator_name_by_id(filter)
+        return self.tasks_collection.find(final_filter)
 
     def modify(self, id, updates : list):
         pass
@@ -58,6 +59,7 @@ class DataBaseManager:
     def read_tasks(self, filter : dict) -> pymongo.cursor.CursorType:
         #First part of the function allow to find the collaborator_id based on his name
         final_filter = self.replace_collaborator_name_by_id(filter)
+        print(final_filter)
         #After replacing collaborator_name by is ID, we can search the task
         return self.tasks_collection.find(final_filter)
     
@@ -86,15 +88,6 @@ class DataBaseManager:
         return self.collaborators_collection.find_one({"_id": collaborator_id})
     
     def get_collaborator_id(self, collaborator_name: dict) -> str | None:
-        """
-        Retrieve the collaborator's ID from the database based on the provided collaborator name.
-
-        Parameters:
-        collaborator_name (dict): A dictionary containing the name of the collaborator.
-
-        Returns:
-        str: The ID of the collaborator. If the collaborator is not found, returns None.
-        """
         return self.collaborators_collection.find_one({"name": collaborator_name}).get("_id", None)
     
     def link_collaborator_to_task(self, task: dict, collaborator_name: dict) -> pymongo.results.UpdateResult | None:

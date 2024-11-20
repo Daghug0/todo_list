@@ -1,6 +1,6 @@
 #!bin/python3
 
-from utils import Collaborator, Date
+from utils import Collaborator, Date, Title
 
 class InputArgument():
     def __init__(self, input_message : str, is_option : bool = True, retry_message : str = "Wrong format. "):
@@ -56,4 +56,4 @@ class TitleArgument(InputArgument):
             else:
                 raise ValueError("Title argument is mandatory")
         else:
-            return input_string
+            return Title(input_string)

@@ -1,9 +1,9 @@
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..', 'src')))
 
 import unittest
-from utils import Collaborator, Date, Title
+from src.utils import Collaborator, Date, Title
 import datetime
 
 class TestCollaborator(unittest.TestCase):

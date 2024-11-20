@@ -1,11 +1,11 @@
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..', 'src')))
 
 import unittest
 import unittest.mock as mocker
-from src.user_interface.arguments import InputArgument, CollaboratorArgument, DateArgument, TitleArgument
-import datetime
+from src.user_interface.arguments import CollaboratorArgument, DateArgument, TitleArgument
+
 class TestCollaboratorArgument(unittest.TestCase):
     def test_collaborator_convert_string_nominal(self):
         argument = CollaboratorArgument(False)
