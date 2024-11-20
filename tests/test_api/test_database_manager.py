@@ -1,6 +1,6 @@
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..', 'src')))
 
 import unittest
 import unittest.mock
@@ -58,6 +58,22 @@ class TestDataBaseManager(unittest.TestCase):
         with unittest.mock.patch('pymongo.MongoClient') as mock_client:
             DataBaseManager()
             mock_client.assert_called_once_with("localhost", 27017)
+
+    def test_get_collaborator_id_existing_name(self):
+        with unittest.mock.patch('pymongo.MongoClient') as mock_client:
+            mock_db = unittest.mock.MagicMock()
+            mock_collaborators_collection = unittest.mock.MagicMock()
+            mock_db.__getitem__.return_value = mock_collaborators_collection
+            mock_client.return_value.__getitem__.return_value = mock_db
+            
+            # Mock the find_one method to return a document with an _id
+            mock_collaborators_collection.find_one.return_value = {"_id": "12345"}
+            
+            db_manager = DataBaseManager()
+            collaborator_id = db_manager.get_collaborator_id({"name": "John Doe"})
+            
+            self.assertEqual(collaborator_id, "12345")
+            mock_collaborators_collection.find_one.assert_called_once_with({"name": {"name": "John Doe"}})
 
 if __name__ == '__main__':
     unittest.main()

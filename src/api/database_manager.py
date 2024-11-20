@@ -4,6 +4,7 @@ import pymongo.results
 import pymongo.collection
 import pymongo.database
 import pymongo.errors
+import pymongo.cursor
 
 class DataBaseManager:
     def __init__(self):
@@ -30,12 +31,44 @@ class DataBaseManager:
     def close(self):
         if self.client and self.client.is_primary:
             self.client.close()
+
+    def read(self, filter : dict) -> pymongo.cursor.CursorType:
+        if "due_date" in filter.keys():
+            filter["due_date"] = {"$lt" : filter["due_date"]}
+        return self.find(filter)
+    
+    def write(self, task_with_name : dict) -> pymongo.cursor.CursorType:
+        task_with_id = self.replace_collaborator_name_by_id(task_with_name)
+        result_write = self.tasks_collection.insert_one(task_with_id)
+        if result_write.acknowledged:
+            return self.read({"_id": result_write.inserted_id})
+        else :
+            raise SystemExit("Failed to insert task, aborting...")
+    def find(self, filter):
+        final_filter = self.replace_collaborator_name_by_id(filter)
+        return self.tasks_collection.find(final_filter)
+
+    def modify(self, id, updates : list):
+        pass
+
+    def delete(self, id):
+        pass
+
+
     
     def read_tasks(self, filter : dict) -> pymongo.cursor.CursorType:
-        return self.tasks_collection.find(filter)
+        #First part of the function allow to find the collaborator_id based on his name
+        final_filter = self.replace_collaborator_name_by_id(filter)
+        print(final_filter)
+        #After replacing collaborator_name by is ID, we can search the task
+        return self.tasks_collection.find(final_filter)
     
-    def write_task(self, query : dict) -> pymongo.cursor.CursorType:
-        return self.tasks_collection.insert_one(query)
+    def write_task(self, task : dict) -> pymongo.cursor.CursorType:
+        final_task = self.replace_collaborator_name_by_id(task)
+        if final_task ==None:
+            return None
+        else:
+            return self.tasks_collection.insert_one(task)
 
     def modify_task(self, task_id : str, updates : dict) -> pymongo.results.UpdateResult:
         return self.tasks_collection.update_one(task_id, updates)
@@ -54,15 +87,36 @@ class DataBaseManager:
     def get_collaborator_document(self, collaborator_id : str) -> dict:
         return self.collaborators_collection.find_one({"_id": collaborator_id})
     
-    def get_collaborator_id(self, collaborator_name : dict) -> str:
-        return self.collaborators_collection.find_one({"name": collaborator_name})["_id"]
+    def get_collaborator_id(self, collaborator_name: dict) -> str | None:
+        return self.collaborators_collection.find_one({"name": collaborator_name}).get("_id", None)
     
-    def link_collaborator_to_task(self, task, collaborator_name : dict) -> pymongo.results.UpdateResult:
+    def link_collaborator_to_task(self, task: dict, collaborator_name: dict) -> pymongo.results.UpdateResult | None:
+        """
+        Links a collaborator to a task by updating the task with the collaborator's ID.
+
+        Parameters:
+        task (dict): A dictionary representing the task to be updated.
+        collaborator_name (dict): A dictionary containing the name of the collaborator to be linked to the task.
+
+        Returns:
+        pymongo.results.UpdateResult: The result of the update operation if the collaborator is found and linked.
+        None: If the collaborator is not found.
+        """
         collaborator_id = self.get_collaborator_id(collaborator_name)
         if collaborator_id != None:
-            return self.modify_task(task, {"collaborator" : collaborator_id})
-        else :
+            return self.modify_task(task, {"collaborator_id": collaborator_id})
+        else:
             return None
+        
+    def replace_collaborator_name_by_id(self, document: dict) -> dict | None:
+        #First part of the function allow to find the collaborator_id based on his name
+        if "collaborator_name" in document.keys():
+            collaborator_id = self.get_collaborator_id(document["collaborator_name"])
+            if collaborator_id != None:
+                document["collaborator_id"] = collaborator_id
+            else: return None
+            document.pop("collaborator_name")
+        return document
 
     
 
