@@ -2,10 +2,9 @@
 
 #This file run our application to manage a todolist
 
-from api.database_manager import DataBaseManager
-from user_interface.UI_manager import UIManager 
-from display.display_manager import DisplayManager
-from utils import utils
+from api import DataBaseManager
+from user_interface import UIManager 
+from display import DisplayManager
 
 
 if __name__=="__main__":

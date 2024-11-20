@@ -4,8 +4,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 's
 
 import unittest
 import datetime
-from src.utils.utils import date_to_string
-from src.utils.utils import parse_date
+from utils import date_to_string, parse_date, parse_collaborator
 
 class TestDateToString(unittest.TestCase):
     def test_date_to_string_standard_date(self):
@@ -33,19 +32,32 @@ class TestParseDate(unittest.TestCase):
     
     def test_parse_date_more_than_three_fields(self):
         test_date = "01/02/2023/04"
-        result = parse_date(test_date)
-        self.assertIsNone(result)
+        with self.assertRaises(ValueError):
+            parse_date(test_date)
     
     def test_parse_date_less_than_three_fields(self):
         test_date = "01/2023"
-        result = parse_date(test_date)
-        self.assertIsNone(result)
+        with self.assertRaises(ValueError):
+            parse_date(test_date)
     
     def test_parse_date_invalid_month(self):
         test_date = "01/13/2023"
-        result = parse_date(test_date)
-        self.assertIsNone(result)
-    
+        with self.assertRaises(ValueError):
+            parse_date(test_date)
+
+class TestParseCollaborator(unittest.TestCase):
+    def test_parse_collaborator_valid_input(self):
+        collaborator = "John Doe"
+        expected_result = ("john", "doe")
+        self.assertEqual(parse_collaborator(collaborator), expected_result)
+    def test_parse_collaborator_without_space(self):
+        collaborator = "John"
+        with self.assertRaises(ValueError):
+            parse_collaborator(collaborator)
+    def test_parse_collaborator_with_more_space(self):
+        collaborator = "John de MontMirail"
+        expected_result = ("john", "de montmirail")
+        self.assertEqual(parse_collaborator(collaborator), expected_result)
 
 
 if __name__ == '__main__':

@@ -14,7 +14,7 @@ def parse_date(string_date : str) -> datetime.datetime:
     splitted_string = string_date.split("/")
     #if there is more than 3 field detected, raise an error
     if len(splitted_string) != 3:
-        return None
+        raise ValueError("Wrong number of /")
     day = splitted_string[0]
     month = splitted_string[1]
     year = splitted_string[2]
@@ -30,7 +30,7 @@ def date_to_string(date_object : datetime.datetime) -> str:
     return date_object.strftime('%d/%m/%Y')
 
 def parse_collaborator(collaborator : str) -> tuple:
-        string_splitted = collaborator.string_argument.split(" ", 1)
+        string_splitted = collaborator.split(" ", 1)
         if (len(string_splitted) == 2):
             return string_splitted[0].lower(),string_splitted[1].lower()
         else :

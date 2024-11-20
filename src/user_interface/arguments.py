@@ -1,6 +1,6 @@
 #!bin/python3
 
-from utils.custom_types import Collaborator, Date
+from utils import Collaborator, Date
 
 class InputArgument():
     def __init__(self, input_message : str, is_option : bool = True, retry_message : str = "Wrong format. "):

@@ -20,8 +20,11 @@ class Collaborator(CustomType):
             raise SystemExit("Either string or dict must be provided.")
     def init_from_dict(self, dict_name : dict):
         if "first_name" in dict_name.keys() and "last_name" in dict_name.keys():
-            self.first_name = dict_name["first_name"]
-            self.last_name = dict_name["last_name"]
+            try:
+                self.first_name = dict_name["first_name"].lower()
+                self.last_name = dict_name["last_name"].lower()
+            except:
+                raise ValueError("Invalid dictionary Format, values must be strings.")
         else :
             raise ValueError("Invalid dictionary format. Expected keys: first_name and last_name.")
 
