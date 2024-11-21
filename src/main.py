@@ -18,14 +18,35 @@ if __name__=="__main__":
         ui_manager.request_all()
         crud_operation = ui_manager.get_operation()
         dict_query = ui_manager.get_arguments_data()
-        print(dict_query)
     # treatment depending on the operation to perform
         with DataBaseManager() as db_manager:
             match(crud_operation):
                 case OperationType.READ:
-                    results = db_manager.read(dict_query)
+                    results = db_manager.read_tasks(dict_query)
                 case OperationType.WRITE:
-                    results = db_manager.write(dict_query)
+                    results = db_manager.write_task(dict_query)
+                case OperationType.MODIFY:
+                    #differenciate the filter of the command (the title) from the update arguments
+                    task_filter = {"title": dict_query.pop("title")}
+                    #count the number of tasks corresponding to the filter
+                    task_count = db_manager.count_task(task_filter)
+                    # If no task is found, display a message and exit
+                    if task_count == 0:
+                        print("No task found with these criteria, exiting...")
+                        raise SystemExit
+                    #else, display the found tasks and ask the user to chose one
+                    elif task_count > 1:
+                        print("Several tasks have been found corresponding to the title.")
+                        tasks_found = db_manager.read_tasks(task_filter)
+                        disp_manager.display_tasks(db_manager.read_tasks(tasks_found))
+                        ui_manager.request_index()
+                        index_to_modify = ui_manager.get_chosen_task_index()
+                        task_to_modify = tasks_found[index_to_modify]
+                        task_filter = task_to_modify
+                    db_manager.modify_task(task_filter,dict_query)
+
+                    
+                    results = db_manager.delete_task(dict_query)
             for result in results:
                 print(result)
         #         case OperationType.WRITE:
